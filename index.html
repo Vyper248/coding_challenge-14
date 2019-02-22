@@ -8,9 +8,16 @@
                 box-sizing: border-box;
             }
             
+            :root {
+                --size: calc(25% - 4px);
+            }
+            
             body, html {
                 height: 100%;
                 margin: 0px;
+                background-image: url(https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/itCjTBE/corporate-grey-low-poly-geometric-motion-background-video-animation-hd-1920x1080_nypfik1eg__F0008.png);
+                background-size: cover;
+                background-position: center;
             }
             
             #gameContainer {
@@ -24,10 +31,15 @@
                 display: grid;
                 box-shadow: 1px 1px 20px 2px lightgray;
                 max-height: calc(100% - 40px);
+                width: 600px;
+                max-width: 95%;
+                background-color: rgba(255,255,255,0.7);
+                overflow: scroll;
             }
             
             h1 {
                 text-align: center;
+                font-variant: small-caps;
             }
             
             #stats {
@@ -58,8 +70,8 @@
                 align-items: center;
                 cursor: pointer;
                 
-                width: calc(25% - 4px);
-                padding-bottom: calc(25% - 4px);
+                width: var(--size);
+                padding-bottom: var(--size);
                 float: left;
                 margin: 2px;
             }
@@ -317,12 +329,16 @@
             }
             
             const changeDifficulty = () => {
+                let rootStyle = document.documentElement.style;
                 if (difficulty.value === 'Easy'){
                     boardSize = 8;
+                    rootStyle.setProperty('--size', 'calc(25% - 4px)');
                 } else if (difficulty.value === 'Medium') {
                     boardSize = 16;
+                    rootStyle.setProperty('--size', 'calc(25% - 4px)');
                 } else if (difficulty.value === 'Hard') {
-                    boardSize = 28;
+                    boardSize = 30;
+                    rootStyle.setProperty('--size', 'calc(20% - 4px)');
                 }
                 
                 images = allImages.slice(0,boardSize/2);
