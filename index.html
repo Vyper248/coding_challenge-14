@@ -22,11 +22,12 @@
                 left: 50%;
                 top: 50%;
                 transform: translate(-50%, -50%);
-                border: 1px solid black;
+                border: 1px solid lightgray;
                 border-radius: 5px;
                 padding: 20px;
                 display: grid;
                 grid-template-rows: 130px auto;
+                box-shadow: 1px 1px 20px 2px lightgray;
             }
             
             h1 {
@@ -35,14 +36,16 @@
             
             #stats {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
             
             #stats div {
                 text-align: center;
+                margin: auto;
             }
             
             #board {
+                margin-top: 10px;
                 display: grid;
                 grid-gap: 20px;
                 grid-template-columns: repeat(4, 1fr);
@@ -57,6 +60,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+            }
+            
+            .tile.correct {
+                border: 2px solid green;
             }
             
             .answer {
@@ -90,6 +97,32 @@
                 transform: scale(0);
             }
             
+            #resetBtn {
+                border: 1px solid lightgray;
+                border-radius: 5px;
+                width: 100px;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+            
+            #resetBtn:hover {
+                background-color: lightgray;
+            }
+            
+            @media screen and (max-width: 600px) {
+                #board {
+                    grid-gap: 5px;
+                }
+                
+                .answer {
+                    padding: 2px;
+                }
+            }
+            
         </style>
     </head>
     <body>
@@ -97,35 +130,27 @@
             <div id="header">
                 <h1>The Matching Game</h1>
                 <div id="stats">
-                    <div>Time Elapsed: <span id="time">0</span></div>
-                    <div>Moves: <span id="moves">0</span></div>
-                    <div onClick="resetGame()">Reset</div>
+                    <div>Time Elapsed<br><span id="time">0</span></div>
+                    <div>Moves<br><span id="moves">0</span></div>
+                    <div onClick="resetGame()" id="resetBtn">Reset</div>
+                    <div>Difficulty <br>
+                        <select onChange="changeDifficulty()" id="difficulty">
+                            <option>Easy</option>
+                            <option selected>Medium</option>
+                            <option>Hard</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <div id="board">
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
-                <div class="tile"></div>
             </div>
         </div>
         
         <script>
             
-            let images = ['bear', 'cat', 'cow', 'dog', 'frog', 'hamster', 'koala', 'lion'];
+            let allImages = ['bear', 'cat', 'cow', 'dog', 'frog', 'hamster', 'koala', 'lion', 'monkey', 'mouse', 'octopus', 'panda', 'pig', 'rabbit', 'tiger'];
+            let images = [...allImages.slice(0,8)];
             let tempImages = [...images, ...images];
             let correct = [];
             
@@ -138,7 +163,10 @@
             
             const timerText = document.querySelector('#time');
             const movesText = document.querySelector('#moves');
-                        
+            const difficulty = document.querySelector('#difficulty');
+            const board = document.querySelector('#board');
+            let tiles = document.querySelectorAll('.tile');
+            
             const startTimer = () => {
                 if (timer !== null) clearInterval(timer);
                 timer = setInterval(() => {
@@ -161,8 +189,6 @@
                     return minutes + ':' + seconds;
                 }
             }
-            
-            let tiles = document.querySelectorAll('.tile');
             
             const showTile = (tile) => {
                 tile.querySelector('.cover').classList.add('hidden');
@@ -200,7 +226,13 @@
                 return false;
             }
             
+            const markCorrect = () => {
+                firstSelected.classList.add('correct');
+                secondSelected.classList.add('correct');
+            }
+            
             const correctGuess = () => {
+                markCorrect();
                 correct.push(firstSelected, secondSelected);
                 firstSelected = null;
                 secondSelected = null;
@@ -242,17 +274,6 @@
                 }
             }
             
-            const startGame = () => {
-                Array.from(tiles).forEach(tile => {
-                    tile.addEventListener('click', (e) => {
-                        selectTile(e.target);
-                    });
-                    createCovers(tile);
-                    addImage(tile);
-                });
-                startTimer();
-            }
-            
             const resetGame = () => {
                 correct = [];
                 startTime = Date.now();
@@ -260,14 +281,52 @@
                 movesText.innerText = moves;
                 startTimer();
                 tempImages = [...images, ...images];
+                firstSelected = null;
+                secondSelected = null;
                 Array.from(tiles).forEach(tile => {
+                    tile.classList.remove('correct');
                     tile.innerHTML = '';
                     createCovers(tile);
                     addImage(tile);
                 });
             }
             
-            startGame();
+            const generateBoard = () => {
+                board.innerHTML = '';
+                for (let i = 0; i < boardSize; i++) {
+                    let newEl = document.createElement('div');
+                    newEl.classList.add('tile');
+                    board.appendChild(newEl);
+                }
+                tiles = document.querySelectorAll('.tile');
+                Array.from(tiles).forEach(tile => {
+                    tile.addEventListener('click', (e) => {
+                        selectTile(e.target);
+                    });
+                });
+                resetGame();
+            }
+            
+            const changeDifficulty = () => {
+                if (difficulty.value === 'Easy'){
+                    boardSize = 8;
+                    board.style.gridTemplateColumns = 'repeat(4, 1fr)';
+                    board.style.gridTemplateRows = 'repeat(4, 1fr)';
+                } else if (difficulty.value === 'Medium') {
+                    boardSize = 16;
+                    board.style.gridTemplateColumns = 'repeat(4, 1fr)';
+                    board.style.gridTemplateRows = 'repeat(4, 1fr)';
+                } else if (difficulty.value === 'Hard') {
+                    boardSize = 30;
+                    board.style.gridTemplateColumns = 'repeat(6, 1fr)';
+                    board.style.gridTemplateRows = 'repeat(5, 1fr)';
+                }
+                
+                images = allImages.slice(0,boardSize/2);
+                generateBoard();
+            }
+            
+            generateBoard();
 
         </script>
     </body>
