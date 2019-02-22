@@ -22,7 +22,6 @@
                 border-radius: 5px;
                 padding: 20px;
                 display: grid;
-                grid-template-rows: 130px minmax(150px, 600px);
                 box-shadow: 1px 1px 20px 2px lightgray;
                 max-height: calc(100% - 40px);
             }
@@ -42,11 +41,11 @@
             }
             
             #board {
-                margin-top: 10px;
-                display: grid;
-                grid-gap: 20px;
-                grid-template-columns: repeat(4, minmax(50px, 200px));
-                grid-template-rows: repeat(4, minmax(50px, 200px));
+                margin-top: 10px;                
+                display: flex;
+                flex-wrap: wrap;
+                max-width: 1000px;
+                justify-content: center;
             }
             
             .tile {
@@ -58,6 +57,11 @@
                 justify-content: center;
                 align-items: center;
                 cursor: pointer;
+                
+                width: calc(25% - 4px);
+                padding-bottom: calc(25% - 4px);
+                float: left;
+                margin: 2px;
             }
             
             .tile.correct {
@@ -69,6 +73,9 @@
                 max-width: 100%;
                 max-height: 100%;
                 pointer-events: none;
+                position: absolute;
+                top: 0px;
+                left: 0px;
             }
             
             .cover {
@@ -81,6 +88,7 @@
                 display: grid;
                 grid-template-columns: repeat(8, 1fr);
                 grid-template-rows: repeat(8, 1fr);
+                z-index: 2;
             }
             
             .coverTile {
@@ -126,6 +134,7 @@
         </style>
     </head>
     <body onload="generateBoard()">
+        
         <div id="gameContainer">
             <div id="header">
                 <h1>The Matching Game</h1>
@@ -310,16 +319,10 @@
             const changeDifficulty = () => {
                 if (difficulty.value === 'Easy'){
                     boardSize = 8;
-                    board.style.gridTemplateColumns = 'repeat(4, minmax(50px, 200px))';
-                    board.style.gridTemplateRows = 'repeat(2, minmax(50px, 200px))';
                 } else if (difficulty.value === 'Medium') {
                     boardSize = 16;
-                    board.style.gridTemplateColumns = 'repeat(4, minmax(50px, 200px))';
-                    board.style.gridTemplateRows = 'repeat(4, minmax(50px, 200px))';
                 } else if (difficulty.value === 'Hard') {
-                    boardSize = 30;
-                    board.style.gridTemplateColumns = 'repeat(6, minmax(50px, 200px))';
-                    board.style.gridTemplateRows = 'repeat(5, minmax(50px, 200px))';
+                    boardSize = 28;
                 }
                 
                 images = allImages.slice(0,boardSize/2);
