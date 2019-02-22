@@ -14,10 +14,6 @@
             }
             
             #gameContainer {
-                width: calc(100% - 40px);
-                max-width: 700px;
-                height: calc(100% - 40px);
-                max-height: 900px;
                 position: absolute;
                 left: 50%;
                 top: 50%;
@@ -26,8 +22,9 @@
                 border-radius: 5px;
                 padding: 20px;
                 display: grid;
-                grid-template-rows: 130px auto;
+                grid-template-rows: 130px minmax(150px, 600px);
                 box-shadow: 1px 1px 20px 2px lightgray;
+                max-height: calc(100% - 40px);
             }
             
             h1 {
@@ -48,8 +45,8 @@
                 margin-top: 10px;
                 display: grid;
                 grid-gap: 20px;
-                grid-template-columns: repeat(4, 1fr);
-                grid-template-rows: repeat(4, 1fr);
+                grid-template-columns: repeat(4, minmax(50px, 200px));
+                grid-template-rows: repeat(4, minmax(50px, 200px));
             }
             
             .tile {
@@ -60,6 +57,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                cursor: pointer;
             }
             
             .tile.correct {
@@ -91,6 +89,8 @@
                 transform: scale(1);
                 transform-origin: center;
                 pointer-events: none;
+                height: 100%;
+                width: 100%;
             }
             
             .cover.hidden .coverTile {
@@ -125,7 +125,7 @@
             
         </style>
     </head>
-    <body>
+    <body onload="generateBoard()">
         <div id="gameContainer">
             <div id="header">
                 <h1>The Matching Game</h1>
@@ -310,24 +310,22 @@
             const changeDifficulty = () => {
                 if (difficulty.value === 'Easy'){
                     boardSize = 8;
-                    board.style.gridTemplateColumns = 'repeat(4, 1fr)';
-                    board.style.gridTemplateRows = 'repeat(4, 1fr)';
+                    board.style.gridTemplateColumns = 'repeat(4, minmax(50px, 200px))';
+                    board.style.gridTemplateRows = 'repeat(2, minmax(50px, 200px))';
                 } else if (difficulty.value === 'Medium') {
                     boardSize = 16;
-                    board.style.gridTemplateColumns = 'repeat(4, 1fr)';
-                    board.style.gridTemplateRows = 'repeat(4, 1fr)';
+                    board.style.gridTemplateColumns = 'repeat(4, minmax(50px, 200px))';
+                    board.style.gridTemplateRows = 'repeat(4, minmax(50px, 200px))';
                 } else if (difficulty.value === 'Hard') {
                     boardSize = 30;
-                    board.style.gridTemplateColumns = 'repeat(6, 1fr)';
-                    board.style.gridTemplateRows = 'repeat(5, 1fr)';
+                    board.style.gridTemplateColumns = 'repeat(6, minmax(50px, 200px))';
+                    board.style.gridTemplateRows = 'repeat(5, minmax(50px, 200px))';
                 }
                 
                 images = allImages.slice(0,boardSize/2);
                 generateBoard();
             }
             
-            generateBoard();
-
         </script>
     </body>
 </html>
