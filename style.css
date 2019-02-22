@@ -1,0 +1,138 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --size: calc(25% - 4px);
+}
+
+body, html {
+    height: 100%;
+    margin: 0px;
+    background-image: url(https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/itCjTBE/corporate-grey-low-poly-geometric-motion-background-video-animation-hd-1920x1080_nypfik1eg__F0008.png);
+    background-size: cover;
+    background-position: center;
+}
+
+#gameContainer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 20px;
+    display: grid;
+    box-shadow: 1px 1px 20px 2px lightgray;
+    max-height: calc(100% - 40px);
+    width: 600px;
+    max-width: 95%;
+    background-color: rgba(255,255,255,0.7);
+    overflow: scroll;
+}
+
+h1 {
+    text-align: center;
+    font-variant: small-caps;
+}
+
+#stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+#stats div {
+    text-align: center;
+    margin: auto;
+}
+
+#board {
+    margin-top: 10px;                
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    justify-content: center;
+}
+
+.tile {
+    border: 1px solid black;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    width: var(--size);
+    padding-bottom: var(--size);
+    float: left;
+    margin: 2px;
+}
+
+.tile.correct {
+    border: 2px solid #28A9E3;
+}
+
+.answer {
+    padding: 10px;
+    max-width: 100%;
+    max-height: 100%;
+    pointer-events: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.cover {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    z-index: 2;
+}
+
+.coverTile {
+    background-color: #2AC5B2;
+    transition: 0.4s;
+    transform: scale(1);
+    transform-origin: center;
+    pointer-events: none;
+    height: 110%;
+    width: 110%;
+}
+
+.cover.hidden .coverTile {
+    transform: scale(0);
+}
+
+#resetBtn {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    width: 100px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#resetBtn:hover {
+    background-color: lightgray;
+}
+
+@media screen and (max-width: 600px) {
+    #board {
+        grid-gap: 5px;
+    }
+
+    .answer {
+        padding: 2px;
+    }
+}
