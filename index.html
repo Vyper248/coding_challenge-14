@@ -77,7 +77,7 @@
             }
             
             .tile.correct {
-                border: 2px solid green;
+                border: 2px solid #28A9E3;
             }
             
             .answer {
@@ -104,7 +104,7 @@
             }
             
             .coverTile {
-                background-color: darkred;
+                background-color: #2AC5B2;
                 transition: 0.3s;
                 transform: scale(1);
                 transform-origin: center;
@@ -153,7 +153,6 @@
                 <div id="stats">
                     <div>Time Elapsed<br><span id="time">0</span></div>
                     <div>Moves<br><span id="moves">0</span></div>
-                    <div onClick="resetGame()" id="resetBtn">Reset</div>
                     <div>Difficulty <br>
                         <select onChange="changeDifficulty()" id="difficulty">
                             <option>Easy</option>
@@ -161,6 +160,7 @@
                             <option>Hard</option>
                         </select>
                     </div>
+                    <div onClick="resetGame()" id="resetBtn">Reset</div>
                 </div>
             </div>
 
