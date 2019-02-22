@@ -10,6 +10,7 @@
             
             body, html {
                 height: 100%;
+                margin: 0px;
             }
             
             #gameContainer {
@@ -69,7 +70,6 @@
                 position: absolute;
                 top: 0px;
                 left: 0px;
-/*                background-color: darkred;*/
                 width: 100%;
                 height: 100%;
                 pointer-events: none;
@@ -133,7 +133,6 @@
             let timer = null;
             let boardSize = 16;
             let moves = 0;
-            let found = 0;
             let firstSelected = null;
             let secondSelected = null;
             
@@ -205,13 +204,17 @@
                 correct.push(firstSelected, secondSelected);
                 firstSelected = null;
                 secondSelected = null;
-                found += 2;
                 moves++;
                 movesText.innerText = moves;
-                if (found === 16) {
-                    console.log('Game Won!!');
+                if (checkWon()) {
                     clearInterval(timer);
                 }
+            }
+            
+            const checkWon = () => {
+                let covers = document.querySelectorAll('.cover.hidden');
+                if (covers.length === boardSize) return true;
+                return false;
             }
             
             const badGuess = () => {
