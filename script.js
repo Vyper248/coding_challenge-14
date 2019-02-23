@@ -1,4 +1,4 @@
-let allImages = ['bear', 'cat', 'cow', 'dog', 'frog', 'hamster', 'koala', 'lion', 'monkey', 'mouse', 'octopus', 'panda', 'pig', 'rabbit', 'tiger'];
+let allImages = ['angular', 'cplusplus', 'csharp', 'css', 'html', 'java', 'js', 'mongodb', 'nodejs', 'passport', 'php', 'python', 'react', 'ruby', 'sequelize'];
 let images = [...allImages.slice(0,8)];
 let tempImages = [...images, ...images];
 let correct = [];
