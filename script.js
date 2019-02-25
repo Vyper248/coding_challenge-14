@@ -9,23 +9,43 @@ let boardSize = 16;
 let moves = 0;
 let firstSelected = null;
 let secondSelected = null;
+let score = 1000;
+let seconds = 0;
+let difficulty = 'Medium';
+let leaderboardDifficulty = 'Medium';
 
 const timerText = document.querySelector('#time');
 const movesText = document.querySelector('#moves');
-const difficulty = document.querySelector('#difficulty');
+const scoreText = document.querySelector('#score');
+
+const finalTime = document.querySelector('#finalTime');
+const finalMoves = document.querySelector('#finalMoves');
+const finalScore = document.querySelector('#finalScore');
+
+const leaderboard = document.querySelector('#leaderboard');
+const leaderboardScores = document.querySelector('#leaderboardScores');
+
 const board = document.querySelector('#board');
+const gameOver = document.querySelector('#gameOver');
 let tiles = document.querySelectorAll('.tile');
 
 const startTimer = () => {
     if (timer !== null) clearInterval(timer);
+    startTime = Date.now();
+    updateTime();
     timer = setInterval(() => {
-        timerText.innerText = getTimeElapsed();
-    });
+        updateTime();
+        score--;
+        updateScore();
+    }, 1000);
 }
 
 const getTimeElapsed = () => {
     let seconds = Math.floor((Date.now() - startTime) / 1000);
+    return parseTime(seconds);
+}
 
+const parseTime = (seconds) => {
     if (seconds < 60) {
         if (seconds < 10) seconds = '0'+seconds;
         return seconds;
@@ -37,6 +57,22 @@ const getTimeElapsed = () => {
         if (seconds < 10) seconds = '0'+seconds;
         return minutes + ':' + seconds;
     }
+}
+
+const updateTime = () => {
+    timerText.innerText = getTimeElapsed();
+    finalTime.innerText = getTimeElapsed();
+}
+
+const updateScore = () => {
+    if (score < 0) score = 0;
+    scoreText.innerHTML = 'Score<br>' + score;
+    finalScore.innerText = score;
+}
+
+const updateMoves = () => {
+    movesText.innerText = moves;
+    finalMoves.innerText = moves;
 }
 
 const showTile = (tile) => {
@@ -63,7 +99,7 @@ const addImage = (tile) => {
     let src = tempImages[rand];
     tempImages.splice(rand, 1);
     let image = document.createElement('img');
-    image.classList.add('answer');
+    image.classList.add('image');
     image.setAttribute('src', 'images/'+src+'.png');
     tile.appendChild(image);
 }
@@ -86,9 +122,9 @@ const correctGuess = () => {
     firstSelected = null;
     secondSelected = null;
     moves++;
-    movesText.innerText = moves;
+    updateMoves();
     if (checkWon()) {
-        clearInterval(timer);
+        endGame();
     }
 }
 
@@ -100,7 +136,9 @@ const checkWon = () => {
 
 const badGuess = () => {
     moves++;
-    movesText.innerText = moves;
+    score -= 5;
+    updateScore();
+    updateMoves();
     setTimeout(() => {
         hideTile(firstSelected);
         hideTile(secondSelected);
@@ -110,6 +148,7 @@ const badGuess = () => {
 }
 
 const selectTile = (tile) => {
+    if (tile === firstSelected) return;
     if (firstSelected && secondSelected) return;
     if (correct.includes(tile)) return;
     if (!firstSelected) firstSelected = tile;
@@ -123,11 +162,69 @@ const selectTile = (tile) => {
     }
 }
 
+const endGame = () => {
+    clearInterval(timer);
+    seconds = Math.floor((Date.now() - startTime) / 1000);
+    gameOver.classList.add('open');
+}
+
+const openLeaderboard = () => {
+    getScores();
+    leaderboard.classList.add('open');
+}
+
+const closePopup = (el) => {
+    el.parentNode.classList.remove('open');
+}
+
+const closeAllPopups = () => {
+    gameOver.classList.remove('open');
+}
+
+const submitScore = () => {
+    let username = document.querySelector('#usernameInput').value;
+    fetch('http://localhost:3010/leaderboard', {
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({username, seconds, score, moves, difficulty: difficulty})
+    }).then(resp => resp.json()).then(data => {
+        closeAllPopups();
+        document.querySelector('#usernameInput').value = '';
+    });
+}
+
+const getScores = () => {
+    fetch('http://localhost:3010/leaderboard/'+leaderboardDifficulty).then(resp => resp.json()).then(data => {
+        populateLeadboard(data);
+    });
+}
+
+const populateLeadboard = (data) => {
+    leaderboardScores.innerText = '';
+    data.forEach(scoreObj => {
+        let row = document.createElement('tr');
+        row.appendChild(createTD(scoreObj.username));
+        row.appendChild(createTD(parseTime(scoreObj.seconds)));
+        row.appendChild(createTD(scoreObj.moves));
+        row.appendChild(createTD(scoreObj.score));
+        leaderboardScores.appendChild(row);
+    });
+}
+
+const createTD = (value) => {
+    let td = document.createElement('td');
+    td.innerText = value;
+    return td;
+};
+
 const resetGame = () => {
     correct = [];
     startTime = Date.now();
+    closeAllPopups();
     moves = 0;
-    movesText.innerText = moves;
+    score = 1000;
+    updateScore();
+    updateMoves();
     startTimer();
     tempImages = [...images, ...images];
     firstSelected = null;
@@ -156,19 +253,26 @@ const generateBoard = () => {
     resetGame();
 }
 
-const changeDifficulty = () => {
+const changeDifficulty = (el) => {
     let rootStyle = document.documentElement.style;
-    if (difficulty.value === 'Easy'){
+    if (el.value === 'Easy'){
         boardSize = 8;
         rootStyle.setProperty('--size', 'calc(25% - 4px)');
-    } else if (difficulty.value === 'Medium') {
+    } else if (el.value === 'Medium') {
         boardSize = 16;
         rootStyle.setProperty('--size', 'calc(25% - 4px)');
-    } else if (difficulty.value === 'Hard') {
+    } else if (el.value === 'Hard') {
         boardSize = 30;
         rootStyle.setProperty('--size', 'calc(20% - 4px)');
     }
-
+    
+    difficulty = el.value;
+    getScores();
     images = allImages.slice(0,boardSize/2);
     generateBoard();
+}
+
+const changeLeaderboardDifficulty = (el) => {
+    leaderboardDifficulty = el.value;
+    getScores();
 }

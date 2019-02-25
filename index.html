@@ -10,23 +10,66 @@
         
         <div id="gameContainer">
             <div id="header">
+                
+                <div onClick="resetGame()" id="resetBtn" class="btn">Reset</div>
+                <div onClick="openLeaderboard()" id="leaderboardBtn" class="btn">Leaderboard</div>
                 <h1>The Matching Game</h1>
                 <div id="stats">
                     <div>Time Elapsed<br><span id="time">0</span></div>
                     <div>Moves<br><span id="moves">0</span></div>
                     <div>Difficulty <br>
-                        <select onChange="changeDifficulty()" id="difficulty">
+                        <select onChange="changeDifficulty(this)" id="difficulty">
                             <option>Easy</option>
                             <option selected>Medium</option>
                             <option>Hard</option>
                         </select>
                     </div>
-                    <div onClick="resetGame()" id="resetBtn">Reset</div>
+                    <div id="score">Score<br>1000</div>
                 </div>
             </div>
 
             <div id="board">
             </div>
+        </div>
+        
+        <div id="gameOver" class="hover popup centered opaque">
+            <div class="closeBtn" onClick="closePopup(this)">+</div>
+            <h1>Game Over</h1>
+            <div class="flex">
+                <div>Time: <span id="finalTime">0</span></div>
+                <div>Moves: <span id="finalMoves">0</span></div>
+                <div>Score: <span id="finalScore">0</span></div>
+            </div>
+            <div class="inputCombined">
+                <input type="text" placeholder="Username" id="usernameInput">
+                <button class="btn" onClick="submitScore()">Submit</button>
+            </div>
+        </div>
+        
+        <div id="leaderboard" class="hover popup centered opaque">
+            <div class="closeBtn" onClick="closePopup(this)">+</div>
+            <h1>Leaderboard</h1>
+            <div class="center">Difficulty:
+                <select onChange="changeLeaderboardDifficulty(this)" id="leaderboardDifficulty">
+                    <option>Easy</option>
+                    <option selected>Medium</option>
+                    <option>Hard</option>
+                </select>
+            </div>
+            <table id="leaderboardTable">
+                <thead>
+                    <tr>
+                        <td>Username</td>
+                        <td>Time</td>
+                        <td>Moves</td>
+                        <td>Score</td>
+                    </tr>
+                </thead>
+                
+                <tbody id="leaderboardScores">
+                    
+                </tbody>
+            </table>
         </div>
         
         <script src="script.js"></script>
