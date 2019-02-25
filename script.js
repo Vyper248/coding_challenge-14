@@ -292,3 +292,6 @@ const resetGame = () => {
         addImage(tile);
     });
 }
+
+//WAKE UP HEROKU SERVER
+getScores();
