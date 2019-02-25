@@ -226,7 +226,7 @@ const openLeaderboard = () => {
 
 const submitScore = () => {
     let username = document.querySelector('#usernameInput').value;
-    fetch('http://localhost:3010/leaderboard', {
+    fetch('https://match-game-challenge.herokuapp.com/leaderboard', {
         method: 'POST',
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({username, seconds, score, moves, difficulty: difficulty})
@@ -237,7 +237,7 @@ const submitScore = () => {
 }
 
 const getScores = () => {
-    fetch('http://localhost:3010/leaderboard/'+leaderboardDifficulty).then(resp => resp.json()).then(data => {
+    fetch('https://match-game-challenge.herokuapp.com/leaderboard/'+leaderboardDifficulty).then(resp => resp.json()).then(data => {
         populateLeadboard(data);
     });
 }

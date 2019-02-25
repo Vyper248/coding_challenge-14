@@ -5,7 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const corsOptions = {
-    origin: '',
+    origin: 'https://vyper248.github.io',
     optionsSuccessStatus: 200
 };
 
