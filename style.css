@@ -258,11 +258,7 @@ h1 {
 }
 
 @media screen and (max-width: 600px) {
-    #board {
-        grid-gap: 5px;
-    }
-
-    .answer {
+    .image {
         padding: 2px;
     }
 }
