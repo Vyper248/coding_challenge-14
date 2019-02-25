@@ -13,6 +13,10 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+    res.send('Server started. Please go <a href="https://vyper248.github.io/coding_challenge-14/">here</a> for content.')
+});
+
 app.get('/leaderboard', (req, res) => {
     db('scores').select('*').orderBy('score', 'desc').then(scores => {
         console.log(scores);
