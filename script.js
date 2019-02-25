@@ -29,6 +29,8 @@ const board = document.querySelector('#board');
 const gameOver = document.querySelector('#gameOver');
 let tiles = document.querySelectorAll('.tile');
 
+//====================================TIMER====================================
+
 const startTimer = () => {
     if (timer !== null) clearInterval(timer);
     startTime = Date.now();
@@ -59,6 +61,8 @@ const parseTime = (seconds) => {
     }
 }
 
+//=================================UPDATING VALUES=================================
+
 const updateTime = () => {
     timerText.innerText = getTimeElapsed();
     finalTime.innerText = getTimeElapsed();
@@ -74,6 +78,27 @@ const updateMoves = () => {
     movesText.innerText = moves;
     finalMoves.innerText = moves;
 }
+
+const changeDifficulty = (el) => {
+    let rootStyle = document.documentElement.style;
+    if (el.value === 'Easy'){
+        boardSize = 8;
+        rootStyle.setProperty('--size', 'calc(25% - 4px)');
+    } else if (el.value === 'Medium') {
+        boardSize = 16;
+        rootStyle.setProperty('--size', 'calc(25% - 4px)');
+    } else if (el.value === 'Hard') {
+        boardSize = 30;
+        rootStyle.setProperty('--size', 'calc(20% - 4px)');
+    }
+    
+    difficulty = el.value;
+    getScores();
+    images = allImages.slice(0,boardSize/2);
+    generateBoard();
+}
+
+//===================================TILE COVERS===================================
 
 const showTile = (tile) => {
     tile.querySelector('.cover').classList.add('hidden');
@@ -94,6 +119,24 @@ const createCovers = (tile) => {
     }
 }
 
+//==================================BOARD CREATION==================================
+
+const generateBoard = () => {
+    board.innerHTML = '';
+    for (let i = 0; i < boardSize; i++) {
+        let newEl = document.createElement('div');
+        newEl.classList.add('tile');
+        board.appendChild(newEl);
+    }
+    tiles = document.querySelectorAll('.tile');
+    Array.from(tiles).forEach(tile => {
+        tile.addEventListener('click', (e) => {
+            selectTile(e.target);
+        });
+    });
+    resetGame();
+}
+
 const addImage = (tile) => {
     let rand = Math.floor(Math.random()*tempImages.length);
     let src = tempImages[rand];
@@ -103,6 +146,8 @@ const addImage = (tile) => {
     image.setAttribute('src', 'images/'+src+'.png');
     tile.appendChild(image);
 }
+
+//====================================TILE SELECTION====================================
 
 const compare = () => {
     let src1 = firstSelected.querySelector('img').getAttribute('src');
@@ -162,16 +207,7 @@ const selectTile = (tile) => {
     }
 }
 
-const endGame = () => {
-    clearInterval(timer);
-    seconds = Math.floor((Date.now() - startTime) / 1000);
-    gameOver.classList.add('open');
-}
-
-const openLeaderboard = () => {
-    getScores();
-    leaderboard.classList.add('open');
-}
+//===================================POPUPS===================================
 
 const closePopup = (el) => {
     el.parentNode.classList.remove('open');
@@ -179,6 +215,13 @@ const closePopup = (el) => {
 
 const closeAllPopups = () => {
     gameOver.classList.remove('open');
+}
+
+//==================================LEADERBOARD==================================
+
+const openLeaderboard = () => {
+    getScores();
+    leaderboard.classList.add('open');
 }
 
 const submitScore = () => {
@@ -217,6 +260,19 @@ const createTD = (value) => {
     return td;
 };
 
+const changeLeaderboardDifficulty = (el) => {
+    leaderboardDifficulty = el.value;
+    getScores();
+}
+
+//=================================END AND RESET=================================
+
+const endGame = () => {
+    clearInterval(timer);
+    seconds = Math.floor((Date.now() - startTime) / 1000);
+    gameOver.classList.add('open');
+}
+
 const resetGame = () => {
     correct = [];
     startTime = Date.now();
@@ -235,44 +291,4 @@ const resetGame = () => {
         createCovers(tile);
         addImage(tile);
     });
-}
-
-const generateBoard = () => {
-    board.innerHTML = '';
-    for (let i = 0; i < boardSize; i++) {
-        let newEl = document.createElement('div');
-        newEl.classList.add('tile');
-        board.appendChild(newEl);
-    }
-    tiles = document.querySelectorAll('.tile');
-    Array.from(tiles).forEach(tile => {
-        tile.addEventListener('click', (e) => {
-            selectTile(e.target);
-        });
-    });
-    resetGame();
-}
-
-const changeDifficulty = (el) => {
-    let rootStyle = document.documentElement.style;
-    if (el.value === 'Easy'){
-        boardSize = 8;
-        rootStyle.setProperty('--size', 'calc(25% - 4px)');
-    } else if (el.value === 'Medium') {
-        boardSize = 16;
-        rootStyle.setProperty('--size', 'calc(25% - 4px)');
-    } else if (el.value === 'Hard') {
-        boardSize = 30;
-        rootStyle.setProperty('--size', 'calc(20% - 4px)');
-    }
-    
-    difficulty = el.value;
-    getScores();
-    images = allImages.slice(0,boardSize/2);
-    generateBoard();
-}
-
-const changeLeaderboardDifficulty = (el) => {
-    leaderboardDifficulty = el.value;
-    getScores();
 }
