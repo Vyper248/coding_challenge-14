@@ -2,12 +2,8 @@ let knex;
 
 if (process.env.DATABASE_URL){
     knex = require('knex')({
-      client: 'pg',
-      version: '11.1',
-      connection: {
-        connectionString: process.env.DATABASE_URL,
-        ssl: true,
-      }
+      client: 'cockroachdb',
+      connection: process.env.DATABASE_URL
     });
 } else {
     knex = require('knex')({
